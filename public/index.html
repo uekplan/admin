@@ -21,7 +21,7 @@
 
         <md-button flex="10" ng-if="exception.label" class="md-raised" ng-click="updateLabel(exception)">Update
         </md-button>
-        <md-button flex="10" class="md-raised md-primary" ng-click="addException(exception)">Add</md-button>
+        <md-button flex="10" ng-if="!exception.label" class="md-raised md-primary" ng-click="addException(exception)">Add</md-button>
         <md-divider></md-divider>
     </md-section>
 </div>
