@@ -59,7 +59,7 @@
                 $scope.labels = null;
                 $scope.label = null;
 
-                $http.get('https://api/uekplan.pl/exceptions')
+                $http.get('https://api.uekplan.pl/exceptions')
                         .success(function (data) {
                             data.forEach(function (exception) {
                                 if (exception.type === 'N') {
@@ -71,7 +71,7 @@
                             $scope.exceptions = data;
                         });
 
-                $http.get('https://api/uekplan.pl/labels')
+                $http.get('https://api.uekplan.pl/labels')
                         .success(function (data) {
                             var x = {};
                             data.forEach(function (label) {
@@ -88,7 +88,7 @@
 
                 $scope.addException = function (exception) {
                     console.log('x');
-                    $http.post('https://api/uekplan.pl/exceptions/add', {id: exception.id})
+                    $http.post('https://api.uekplan.pl/exceptions/add', {id: exception.id})
                             .success(function () {
                                 $scope.exceptions.forEach(function (item, i) {
                                     if (item.id === exception.id) {
@@ -101,7 +101,7 @@
                             });
                 };
                 $scope.updateLabel = function (exception) {
-                    $http.post('https://api/uekplan.pl/exceptions/update', {
+                    $http.post('https://api.uekplan.pl/exceptions/update', {
                         exceptionId: exception.id,
                         labelId: exception.label.id
                     })
