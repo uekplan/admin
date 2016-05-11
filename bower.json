@@ -1,0 +1,23 @@
+{
+  "name": "uekplan-admin",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Przemysław Płyś <przemyslaw.plys@gmail.com>"
+  ],
+  "directory": "public/components/",
+  "license": "MIT",
+  "homepage": "https://github.com/uekplan/admin",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-material": "^1.0.8"
+  }
+}

@@ -1,0 +1,129 @@
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="components/angular-material/angular-material.min.css">
+</head>
+<body ng-app="BlankApp" ng-controller="HomepageController" ng-cloak>
+<div ng-repeat="exception in exceptions">
+
+    <md-section ng-if="exceptions && labels" layout="row" layout-align="center center">
+        <span flex="5">{{exception.type}}</span>
+
+        <span flex="15">{{exception.key}}</span>
+
+        <md-autocomplete flex="25" md-selected-item="exception.label" md-search-text="exception.query"
+                         md-items="item in labels[exception.type] | filter:exception.query"
+                         md-autoselect="true"
+                         md-item-text="item.key">
+            <span md-highlight-text="exception.query">{{item.key}}</span>
+        </md-autocomplete>
+
+        <md-button flex="10" ng-if="exception.label" class="md-raised" ng-click="updateLabel(exception)">Update
+        </md-button>
+        <md-button flex="10" class="md-raised md-primary" ng-click="addException(exception)">Add</md-button>
+        <md-divider></md-divider>
+    </md-section>
+</div>
+
+
+<!--
+  Your HTML content here
+-->
+
+<!-- Angular Material requires Angular.js Libraries -->
+<script src="components/angular/angular.min.js"></script>
+<script src="components/angular-animate/angular-animate.min.js"></script>
+<script src="components/angular-aria/angular-aria.min.js"></script>
+<script src="components/angular-messages/angular-messages.min.js"></script>
+
+<!-- Angular Material Library -->
+<script src="components/angular-material/angular-material.min.js"></script>
+
+<!-- Your application bootstrap  -->
+<script type="text/javascript">
+    /**
+     * You must include the dependency on 'ngMaterial'
+     */
+    angular.module('BlankApp', ['ngMaterial'])
+            .config(function ($httpProvider) {
+                //Enable cross domain calls
+                $httpProvider.defaults.useXDomain = true;
+                delete $httpProvider.defaults.headers.common['X-Requested-With'];
+
+            })
+
+            .controller('HomepageController', ['$scope', '$http', '$q', function ($scope, $http, $q) {
+                $scope.query = null;
+                $scope.exceptions = null;
+                $scope.labels = null;
+                $scope.label = null;
+
+                $http.get('https://api/uekplan.pl/exceptions')
+                        .success(function (data) {
+                            data.forEach(function (exception) {
+                                if (exception.type === 'N') {
+                                    exception.query = exception.key.split(' ')[exception.key.split(' ').length - 1];
+                                } else {
+                                    exception.query = exception.key;
+                                }
+                            });
+                            $scope.exceptions = data;
+                        });
+
+                $http.get('https://api/uekplan.pl/labels')
+                        .success(function (data) {
+                            var x = {};
+                            data.forEach(function (label) {
+                                if (x[label.type] === undefined) {
+                                    x[label.type] = [];
+                                }
+                                x[label.type].push(label);
+                            })
+                            $scope.labels = x;
+                        })
+                        .error(function (err) {
+                            console.log(err);
+                        });
+
+                $scope.addException = function (exception) {
+                    console.log('x');
+                    $http.post('https://api/uekplan.pl/exceptions/add', {id: exception.id})
+                            .success(function () {
+                                $scope.exceptions.forEach(function (item, i) {
+                                    if (item.id === exception.id) {
+                                        $scope.exceptions.remove(i);
+                                    }
+                                });
+                            })
+                            .error(function (err) {
+                                alert(err);
+                            });
+                };
+                $scope.updateLabel = function (exception) {
+                    $http.post('https://api/uekplan.pl/exceptions/update', {
+                        exceptionId: exception.id,
+                        labelId: exception.label.id
+                    })
+                            .success(function () {
+                                $scope.exceptions.forEach(function (item, i) {
+                                    if (item.id === exception.id) {
+                                        $scope.exceptions.remove(i);
+                                    }
+                                });
+                            })
+                            .error(function (err) {
+                                alert(err);
+                            });
+                };
+            }]);
+    Array.prototype.remove = function (from, to) {
+        var rest = this.slice((to || from) + 1 || this.length);
+        this.length = from < 0 ? this.length + from : from;
+        return this.push.apply(this, rest);
+    };
+
+</script>
+
+</body>
+</html>
