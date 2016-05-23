@@ -21,7 +21,7 @@
 
         <md-button flex="10" ng-if="exception.label" class="md-raised" ng-click="updateLabel(exception)">Update
         </md-button>
-        <md-button flex="10" ng-if="!exception.label" class="md-raised md-primary" ng-click="addException(exception)">Add</md-button>
+        <md-button flex="10" ng-if="!exception.label " class="md-raised md-primary" ng-click="addException(exception)">Add</md-button>
         <md-divider></md-divider>
     </md-section>
 </div>
@@ -61,20 +61,20 @@
 
                 $http.get('https://api.uekplan.pl/exceptions')
                         .success(function (data) {
-                            data.forEach(function (exception) {
+                            data.exceptions.forEach(function (exception) {
                                 if (exception.type === 'N') {
                                     exception.query = exception.key.split(' ')[exception.key.split(' ').length - 1];
                                 } else {
                                     exception.query = exception.key;
                                 }
                             });
-                            $scope.exceptions = data;
+                            $scope.exceptions = data.exceptions;
                         });
 
                 $http.get('https://api.uekplan.pl/labels')
                         .success(function (data) {
                             var x = {};
-                            data.forEach(function (label) {
+                            data.labels.forEach(function (label) {
                                 if (x[label.type] === undefined) {
                                     x[label.type] = [];
                                 }
